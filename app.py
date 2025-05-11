@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 # In-memory data store
 
-items = ['Apple', 'Banana', 'Carrot']
+items = []
 next_id = 1
 
 # Helper: Find item by id
@@ -46,7 +46,7 @@ def update_item(item_id):
     if not data or 'name' not in data:
         return jsonify({'error': 'Name is required'}), 400
     item['name'] = data['name']
-    return jsonify, 200
+    return jsonify(item), 200
 
 # DELETE /items/<id> - Delete item
 @app.route('/items/<int:item_id>', methods = ['DELETE'])
