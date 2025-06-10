@@ -1,0 +1,47 @@
+syntax = "proto3";						// Use the last version of protobuf
+package myitems;						// namespace
+
+message ItemRequest						// Request information about a speicifc item
+{
+	int32 id = 1;
+}
+
+message SendStream						// Conatains stream of data sent to the client 
+{
+	int32 id = 1;
+	string name = 2;
+}
+
+message ItemResponse					// Contains response from server to the client
+{
+	int32 id = 1;
+	string name = 2;
+}
+
+message ItemsAddedResult				// Contains total number of items received by server from client
+{
+	int32 total_count = 1;
+}
+
+message ChatMessage						// Contains strings from both sides of interaction
+{
+	string user = 1;
+	string message = 2;
+}
+
+message Empty {}
+
+service ItemService
+{
+	// Unary: Get a single item by ID
+	rpc GetItemById(ItemRequest) returns (ItemResponse);
+
+	// Server streaming: List all items
+	rpc ListAllItems(Empty) returns (stream ItemResponse);
+
+	// Client streaming: Add multiple items
+	rpc AddItems(stream SendStream) returns (ItemsAddedResult);
+
+	// Bidirectional streaming: Chat about items
+	rpc ChatAboutItems(stream ChatMessage) returns (stream ChatMessage);
+}
