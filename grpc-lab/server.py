@@ -3,6 +3,14 @@ from concurrent import futures
 import myitems_pb2
 import myitems_pb2_grpc
 from grpc_reflection.v1alpha import reflection
+from pymongo import MongoClient
+import os
+
+mongo_host = os.environ.get("MONGO_HOST", "localhost")
+mongo_port = os.environ.get("MONGO_PORT", "27017")
+
+mongo_db = os.getenv("MONGO_DB", "itemsdb")
+client = MongoClient(f"mongodb://{mongo_host}:{mongo_port}", serverSelectionTimeout = 5000)
 
 items = [
 	{"id": 1, "name": "Name 1"},
@@ -34,12 +42,17 @@ class ItemService(myitems_pb2_grpc.ItemServiceServicer):											# Links to cl
 	def GetItemById(self, request, context):
 		# unary
 		# search for item with matching ID
-		for item in items:
-			if item["id"] == request.id:																	# Look for data with the ID requested by Client and return that value
-				return myitems_pb2.ItemResponse(id = item["id"], name = item["name"])
-		context.set_code(grpc.StatusCode.NOT_FOUND)															# Error code when client requests for something that doesn't exist
-		context.set_details("Item not found")
-		return myitems_pb2.ItemResponse()	# Return empty response if not found
+		doc = collection.find_one({"id": request.id})
+		
+		# for item in items:
+			# if item["id"] == request.id:																	# Look for data with the ID requested by Client and return that value
+				# return myitems_pb2.ItemResponse(id = item["id"], name = item["name"])
+		# if not doc:
+			context.set_code(grpc.StatusCode.NOT_FOUND)															# Error code when client requests for something that doesn't exist
+			context.set_details("Item not found")
+			return myitems_pb2.ItemResponse()	# Return empty response if not found
+		
+		return myitems_pb2.ItemResponse(id = doc["id"], name = doc["name"])
 
 	def ListAllItems(self, request, context):
 		# server-streaming

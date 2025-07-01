@@ -1,6 +1,15 @@
+#import grpc
+#import myitems_pb2
+#import myitems_pb2_grpc
+import os
 from flask import Flask, request, jsonify, abort
 
 app = Flask(__name__)
+
+GRPC_HOST = os.getenv("GRPC_HOST", "localhost")
+GRPC_PORT = os.getenv("GRPC_PORT", "50051")
+
+
 
 # In-memory data store
 

@@ -14,3 +14,8 @@ Message:
 Added a new part to implement containerized grpc server and a local grpc client communicating with each other.
 Added reflection and interceptors on the server end.
 Added a .proto file for protocol buffers and compiled.
+
+Version: v2.1
+Type: bugfix
+Message:
+Made the rest performance test script form a table connection instead of multiple connections per request.

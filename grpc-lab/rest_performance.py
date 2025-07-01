@@ -4,12 +4,14 @@ import time
 URL = "http://localhost:5000/items/3"
 n = 10000
 
-
+session = requests.Session()
 start_time = time.time()
+
+session.headers.update({'Connection': 'keep-alive'})
 
 for i in range(n):
     start = time.time()
-    response = requests.get(URL)
+    response = session.get(URL)
     end = time.time()
     
     if response.status_code == 200:
